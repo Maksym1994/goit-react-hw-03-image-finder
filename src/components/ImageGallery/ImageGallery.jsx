@@ -21,11 +21,9 @@ export class ImageGallery extends Component {
 
     if (prevProps.pictureName !== pictureName) {
       this.setState({
-        images: null,
-        page: 1,
         status: 'pending',
       });
-      getImages(pictureName, 1).then(responce => {
+      getImages(pictureName, page).then(responce => {
         if (responce.data.total !== 0) {
           this.setState({
             images: responce.data.hits,
@@ -82,7 +80,14 @@ export class ImageGallery extends Component {
         )}
         {status === 'resolved' && (
           <ul className={s.ImageGallery}>
-            <ImageGalleryItem images={images} onClick={this.handleSelectedImage} />
+            {images.map(({ id, webformatURL, largeImageURL }) => (
+              <ImageGalleryItem
+                key={id}
+                webformatURL={webformatURL}
+                largeImageURL={largeImageURL}
+                onClick={this.handleSelectedImage}
+              />
+            ))}
           </ul>
         )}
         {showButton && <Button onClick={this.handleLoadMore} />}
